@@ -8,9 +8,9 @@ A utility script to import `people` from Star Wars API to a local postgreSQL dat
 
 ## Installation
 - __SSH__
-	`git clone git@github.com:<username>/swapi-to-postgresql.git`
+	`git clone git@github.com:ZealousProgramming/swapi-to-postgresql.git`
 - __HTTP__
-	`git clone https://github.com/<username>/swapi-to-postgresql.git`
+	`git clone https://github.com/ZealousProgramming/swapi-to-postgresql.git`
 
 ## Usage
 - `HOSTNAME`: `localhost`
