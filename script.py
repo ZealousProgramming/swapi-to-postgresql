@@ -3,6 +3,7 @@ import pathlib
 from typing import Final
 from pathlib import Path
 from sys import argv
+import sys
 import os
 import json
 import psycopg2
@@ -11,10 +12,10 @@ from aiohttp import ClientSession
 
 # Database info
 HOSTNAME: Final[str] = 'localhost'
-DATABASE: Final[str] = 'bootcamp'
+DATABASE: str = 'bootcamp'
 USERNAME: str = os.environ['BOOTCAMP_USER']
 PWD: str = os.environ['BOOTCAMP_CREDS']
-PORT_ID: Final[str] = '5433'
+PORT_ID: str = '5432'
 
 # Options
 FORMAT: bool = True
@@ -561,6 +562,8 @@ def print_help():
 
 	print('Usage: python ./script.py ([options])')
 	print('Example:')
+	print('\tpython ./script.py -db=some_database')
+	print('\tpython ./script.py -p=5433')
 	print('\tpython ./script.py -c=false')
 	print('\tpython ./script.py -f')
 	print('\tpython ./script.py --cache=false')
@@ -571,13 +574,19 @@ def print_help():
 	print('\tpython ./script.py --cache=false --verbose')
 	print('\n')
 	print('Options:')
-	print('-c, --cache\t\tWhether or not to cache and use the cached results. Default=true')
+	print('-db, --database\t\tName of the database to connect to (DEFAULT="bootcamp")')
+	print('\t\t\t\t-db=some_db')
+	print('\t\t\t\t-database=some_other_db')
+	print('-p, --port\t\tThe port to connect to (DEFAULT=5432)')
+	print('\t\t\t\t-p=5433')
+	print('\t\t\t\t--port=5434')
+	print('-c, --cache\t\tWhether or not to cache and use the cached results (Default=true)')
 	print('\t\t\tDisable caching and the use of any existing cache:')
-	print('\t\t\t-c=false')
-	print('\t\t\t--cache=false')
+	print('\t\t\t\t-c=false')
+	print('\t\t\t\t--cache=false')
 	print('-fmt, --format\t\tFormat the fields to be consistent (DEFAULT=true)')
-	print('\t\t\t-fmt=false')
-	print('\t\t\t--format=false')
+	print('\t\t\t\t-fmt=false')
+	print('\t\t\t\t--format=false')
 	print('\t\t\tDisable consistency formatting:')
 	print("-f, --force\t\tForce a cache update")
 	print('-v, --verbose\t\tPrints out detailed information of the process')
@@ -586,7 +595,7 @@ def print_help():
 	print('-h, --help\t\tPrint usage information')
 
 async def main():
-	global VERBOSE, FORCE_CACHE_UPDATE, CACHE, FORMAT
+	global VERBOSE, FORCE_CACHE_UPDATE, CACHE, FORMAT, DATABASE, PORT_ID
 	filename: str = 'swapi_data'
 	bin_location: str = './bin'
 
@@ -650,7 +659,30 @@ async def main():
 				elif count > 1:
 					print('Invalid syntax: Too many = in the flag %s', la)
 					return
+			elif arg.startswith('-db=') or arg.startswith('--database='):
+				count: int = arg.count('=')
 
+				if count == 1:
+					index: int = la.index('=') + 1
+					value: str = la[index:]
+
+					DATABASE = value
+				
+				elif count > 1:	
+					print('Invalid syntax: Too many = in the flag %s', la)
+					return
+			elif arg.startswith('-p=') or arg.startswith('--port='):
+				count: int = arg.count('=')
+
+				if count == 1:
+					index: int = la.index('=') + 1
+					value: str = la[index:]
+
+					PORT_ID = value
+				
+				elif count > 1:	
+					print('Invalid syntax: Too many = in the flag %s', la)
+					return
 
 	if FORCE_CACHE_UPDATE and not CACHE:
 		print('Cannot force a cache update and not have caching enabled.')
@@ -660,6 +692,8 @@ async def main():
 
 	if VERBOSE:
 		print('Running with Options:')
+		print('\t Database:', DATABASE)
+		print('\t Database:', PORT_ID)
 		print('\t Verbose Output:', VERBOSE)
 		print('\t Formatting:', FORMAT)
 		print('\t Cache:', CACHE)
@@ -712,7 +746,7 @@ async def main():
 				print ('Constructing %s table..', category)
 			
 			if not create_table(cursor, category):
-				quit(-1)
+				sys.exit(-1)
 
 		print ('Populating tables..')
 
@@ -721,15 +755,21 @@ async def main():
 				print ('Populating %s table..', category)
 
 			if not populate_table(cursor, category):
-				quit(-1)
+				sys.exit(-1)
 
 			if VERBOSE:	
 				print(len(DATA[category]), ' records inserted')
 
 		connection.commit()
-		
+
+	except psycopg2.errors.OperationalError as e:
+		print("Failed to connect.. \n{0}".format(e))
+		sys.exit(-1)
+
 	except Exception as err:
-		print('Encountered an error: ', err.__class__.__name__)
+		# print('Encountered an error: ', err.__class__.__name__)
+		print('Encountered an error: ', err)
+		sys.exit(-1)
 
 	finally:
 		if cursor is not None:

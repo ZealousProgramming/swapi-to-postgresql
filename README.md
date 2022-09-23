@@ -13,13 +13,18 @@ A utility script to import data from Star Wars API to a local postgreSQL databas
 	`git clone https://github.com/ZealousProgramming/swapi-to-postgresql.git`
 
 ## Usage
-- `HOSTNAME`: `localhost`
-- `DATABASE`: The name of the database (DEFAULT: `bootcamp`)
+- `DATABASE`: Set the name of the database via the `-db` or `--database` flags
+- `PORT_ID`: Set the port to connect to via the `-p` or `--port` flags
 - `USERNAME`: An environment variable of the username you use for postgreSQL (DEFAULT: `BOOTCAMP_USER`)
 - `PWD`: An environment variable of the password you use for postgreSQL (DEFAULT: `BOOTCAMP_CREDS`)
-- `PORT_ID` The port postgreSQL is running on
 
 __Options__: 
+- `-db, --database`: Name of the database to connect to
+	- DEFAULT: `bootcamp`
+	- To change: `-db=some_db` or `--database=some_other_db`
+- `-p, --port`: The port to connect to
+	- DEFAULT: `5432`
+	- To change: `-p=5433` or `--port=5433`
 - `-c, --cache`: Set whether to take advantage of caching
 	- DEFAULT: `True`
 	- To disable: `-c=false` or `--cache=false` 
@@ -38,6 +43,8 @@ cd swapi-to-postgresql
 
 # In the repo source directory
 python ./script.py
+python ./script.py -db=some_database # Connect to a db other than `bootcamp`
+python ./script.py -p=5433 # Connect to a db on a port other than `5432`
 python ./script.py -c=false # Turn off the use of caching
 python ./script.py -f # Force a cache update
 python ./script.py -v # Produce a detailed output
@@ -55,5 +62,6 @@ python ./script.py --cache=false --verbose
 - [x] Format flag
 - [x] Syntax error messages for flag setting
 - [x] Update documentation to reflect the refactor
-- [ ] Flag to use another dbname
-- [ ] Flag to use another port
+- [x] Flag to use another dbname
+- [x] Flag to use another port
+- [x] Connection error message
