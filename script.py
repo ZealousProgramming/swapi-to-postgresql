@@ -618,6 +618,7 @@ def populate_table(cursor, category_name) -> bool:
 	unknown: str = 'unknown'
 	none: str = 'none'
 	na: str = 'n/a'
+	null: str = 'NULL'
 	upper_na: str = 'N/A'
 
 	try:
@@ -632,6 +633,21 @@ def populate_table(cursor, category_name) -> bool:
 
 				entry_data = entry[column_name]
 
+				# Make the columns with 'unknown's consistent
+				if FORMAT:
+					data_type: str = type(entry_data).__name__
+					if data_type == "str":
+						if entry_data == unknown or entry_data == none or entry_data == upper_na or entry_data == na:
+							entry_data = null
+					elif data_type == "list":
+						for element in entry_data:
+							if type(element).__name__ == "str":
+								if element == unknown or element == none or element == upper_na or entry_data == na:
+									element = null
+
+				
+				is_null: bool =  entry_data == 'NULL'
+
 				if column_name == 'films':
 					arr_data: str = "{ "
 					filmCount = len(entry_data)
@@ -640,7 +656,7 @@ def populate_table(cursor, category_name) -> bool:
 						film_number: int = int(film[film_number_index])
 						film_name: str = FILM_TITLES[film_number - 1]
 
-						arr_data += f'"{film_name}"'
+						arr_data += f'{film_name}'
 
 						if index + 1 < filmCount:
 							arr_data += ', '
@@ -658,7 +674,10 @@ def populate_table(cursor, category_name) -> bool:
 				elif column['array_parse']:
 					# parse this field into an array
 					# , as a delimiter
-					arr_data: str = "{ "
+					arr_data: str = ''
+
+					if not is_null:
+						arr_data = '{ '
 					
 					commaCount = entry_data.count(',')
 				
@@ -690,16 +709,18 @@ def populate_table(cursor, category_name) -> bool:
 								right_index += 1
 
 					else:
-						arr_data += f'"{entry_data}"'
+						arr_data += f'{entry_data}'
 
-					arr_data += " }"
+					if not is_null:
+						arr_data += ' }'
+					else:
+						arr_data = None
+
 					entry_data = arr_data
 
-			# Make the columns with 'unknown's consistent
-				if FORMAT:
-					if type(entry_data).__name__ == "str":
-						if entry_data == unknown or entry_data == none or entry_data == upper_na:
-							entry_data = na
+				elif is_null:
+					entry_data = None
+
 				data += (entry_data,)
 
 			cursor.execute(insert_row_query, data)

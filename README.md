@@ -11,6 +11,9 @@ A utility script to import data from Star Wars API to a local postgreSQL databas
 	`git clone git@github.com:ZealousProgramming/swapi-to-postgresql.git`
 - __HTTP__
 	`git clone https://github.com/ZealousProgramming/swapi-to-postgresql.git`
+- Add `BOOTCAMP_USER` to your environment variables. The value will be your postgreSQL username (DEFAULT: `postgres`)
+- Add `BOOTCAMP_CREDS` to your environment variables. The value will be your postgreSQL user password.
+- Restart your terminal, if it is running.
 
 ## Usage
 - `DATABASE`: Set the name of the database via the `-db` or `--database` flags
