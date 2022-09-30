@@ -28,6 +28,7 @@ SWAPI_API_URL: Final[str] = 'https://swapi.dev/api/'
 # CATEGORY_NAMES: list = ['films', 'people', 'planets', 'species', 'starships', 'vehicles']
 CATEGORY_NAMES: list = ['people']
 FILM_TITLES: Final[list] = ['A New Hope', 'The Empire Strikes Back', 'Return of the Jedi', 'The Phantom Menace', 'Attack of the Clones', 'Revenge of the Sith']
+PLANET_NAMES: list = []
 DATA: dict = {}
 SCHEMA: dict = {
 	'films': { 
@@ -408,6 +409,12 @@ SCHEMA: dict = {
 	},
 }
 
+def extract_planet_names():
+	planets = DATA['planets']
+
+	for planet in planets:
+		PLANET_NAMES.append(planet['name'])
+
 async def fetch_category(session: ClientSession, category_name: str):
 	""" Fetches the category data, from the SWAPI endpoint of name `category_name`, and 
 		appends it to the DATA dictionary.
@@ -640,6 +647,13 @@ def populate_table(cursor, category_name) -> bool:
 
 					arr_data += " }"
 					entry_data = arr_data
+
+				elif column_name == 'homeworld':
+					planet_number_index: int = entry_data.index('planets/') + 8
+					planet_number: int = int(entry_data[planet_number_index])
+					planet_name: str = PLANET_NAMES[planet_number - 1]
+
+					entry_data = f'{planet_name}'
 
 				elif column['array_parse']:
 					# parse this field into an array
@@ -895,6 +909,8 @@ async def main():
 			write_to_file(filename, bin_location)
 
 			print('Exported to: ' + bin_location + "/" + filename + '.json')
+
+	extract_planet_names()
 
 	try:
 		print(f'Connecting to postgresql database at: {HOSTNAME}:{PORT_ID}/{DATABASE}')
