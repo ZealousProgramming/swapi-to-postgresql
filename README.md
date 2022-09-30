@@ -25,6 +25,8 @@ __Options__:
 - `-p, --port`: The port to connect to
 	- DEFAULT: `5432`
 	- To change: `-p=5433` or `--port=5433`
+- `-d, --data`: Use a modified version of the dataset
+	- To change: `-d="./bin/some_data.json"` or `--data="./bin/some_custom_data.json"`
 - `-c, --cache`: Set whether to take advantage of caching
 	- DEFAULT: `True`
 	- To disable: `-c=false` or `--cache=false` 
@@ -46,6 +48,7 @@ python ./script.py
 python ./script.py -db=some_database # Connect to a db other than `bootcamp`
 python ./script.py -p=5433 # Connect to a db on a port other than `5432`
 python ./script.py -c=false # Turn off the use of caching
+python ./script.py -d="./bin/custom_data.json" # Use a modified version of the dataset
 python ./script.py -f # Force a cache update
 python ./script.py -v # Produce a detailed output
 python ./script.py --cache=false
@@ -57,7 +60,6 @@ python ./script.py --cache=false --verbose
 ```
 
 ## Future Features
----
 - [x] Import all tables
 - [x] Format flag
 - [x] Syntax error messages for flag setting
@@ -65,3 +67,4 @@ python ./script.py --cache=false --verbose
 - [x] Flag to use another dbname
 - [x] Flag to use another port
 - [x] Connection error message
+- [x] Allow for a custom data

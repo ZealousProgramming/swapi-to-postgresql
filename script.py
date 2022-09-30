@@ -22,9 +22,12 @@ FORMAT: bool = True
 VERBOSE: bool = False
 CACHE: bool = True
 FORCE_CACHE_UPDATE: bool = False
+CUSTOM_DATA: bool = False
 
 SWAPI_API_URL: Final[str] = 'https://swapi.dev/api/'
-CATEGORY_NAMES: list = ['films', 'people', 'planets', 'species', 'starships', 'vehicles']
+# CATEGORY_NAMES: list = ['films', 'people', 'planets', 'species', 'starships', 'vehicles']
+CATEGORY_NAMES: list = ['people']
+FILM_TITLES: Final[list] = ['A New Hope', 'The Empire Strikes Back', 'Return of the Jedi', 'The Phantom Menace', 'Attack of the Clones', 'Revenge of the Sith']
 DATA: dict = {}
 SCHEMA: dict = {
 	'films': { 
@@ -37,28 +40,34 @@ SCHEMA: dict = {
 		'columns': [
 			{
 				'column_name': 'episode_id',
-				'column_type': 'SMALLINT NOT NULL'
+				'column_type': 'SMALLINT NOT NULL',
+				'array_parse': False
 			},
 			{
 				'column_name': 'title',
-				'column_type': 'VARCHAR(25) NOT NULL'
+				'column_type': 'VARCHAR(25) NOT NULL',
+				'array_parse': False
 			},
 			
 			{
 				'column_name': 'opening_crawl',
-				'column_type': 'VARCHAR(575)'
+				'column_type': 'VARCHAR(575)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'director',
-				'column_type': 'VARCHAR(25)'
+				'column_type': 'VARCHAR(25)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'producer',
-				'column_type': 'VARCHAR(50)'
+				'column_type': 'VARCHAR(50)',
+				'array_parse': True
 			},
 			{
 				'column_name': 'release_date',
-				'column_type': 'DATE NOT NULL'
+				'column_type': 'DATE NOT NULL',
+				'array_parse': False
 			}
 		]
 	},
@@ -72,43 +81,58 @@ SCHEMA: dict = {
 		'columns': [
 			{
 				'column_name': 'id',
-				'column_type': 'SERIAL'
+				'column_type': 'SERIAL',
+				'array_parse': False
 			},
 			{
 				'column_name': 'name',
-				'column_type': 'VARCHAR(50)'
+				'column_type': 'VARCHAR(50) NOT NULL',
+				'array_parse': False
 			},
 			{
 				'column_name': 'gender',
-				'column_type': 'VARCHAR(18)'
+				'column_type': 'VARCHAR(18)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'height',
-				'column_type': 'VARCHAR(12)'
+				'column_type': 'VARCHAR(12)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'mass',
-				'column_type': 'VARCHAR(12)'
+				'column_type': 'VARCHAR(12)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'birth_year',
-				'column_type': 'VARCHAR(12)'
+				'column_type': 'VARCHAR(12)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'hair_color',
-				'column_type': 'VARCHAR(15)'
+				'column_type': 'text[]',
+				'array_parse': True
 			},
 			{
 				'column_name': 'skin_color',
-				'column_type': 'VARCHAR(45)'
+				'column_type': 'text[]',
+				'array_parse': True
 			},
 			{
 				'column_name': 'eye_color',
-				'column_type': 'VARCHAR(15)'
+				'column_type': 'text[]',
+				'array_parse': True
 			},
 			{
 				'column_name': 'homeworld',
-				'column_type': 'VARCHAR(50)'
+				'column_type': 'VARCHAR(50)',
+				'array_parse': False
+			},
+			{
+				'column_name': 'films',
+				'column_type': 'text[]',
+				'array_parse': False
 			}
 		]
 	},
@@ -122,43 +146,53 @@ SCHEMA: dict = {
 		'columns': [
 			{
 				'column_name': 'id',
-				'column_type': 'SERIAL'
+				'column_type': 'SERIAL',
+				'array_parse': False
 			},
 			{
 				'column_name': 'name',
-				'column_type': 'VARCHAR(50)'
+				'column_type': 'VARCHAR(50)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'rotation_period',
-				'column_type': 'VARCHAR(18)'
+				'column_type': 'VARCHAR(18)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'orbital_period',
-				'column_type': 'VARCHAR(18)'
+				'column_type': 'VARCHAR(18)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'diameter',
-				'column_type': 'VARCHAR(12)'
+				'column_type': 'VARCHAR(12)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'climate',
-				'column_type': 'VARCHAR(30)'
+				'column_type': 'VARCHAR(30)',
+				'array_parse': True
 			},
 			{
 				'column_name': 'gravity',
-				'column_type': 'VARCHAR(45)'
+				'column_type': 'VARCHAR(45)',
+				'array_parse': True
 			},
 			{
 				'column_name': 'terrain',
-				'column_type': 'VARCHAR(45)'
+				'column_type': 'VARCHAR(45)',
+				'array_parse': True
 			},
 			{
 				'column_name': 'surface_water',
-				'column_type': 'VARCHAR(15)'
+				'column_type': 'VARCHAR(15)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'population',
-				'column_type': 'VARCHAR(15)'
+				'column_type': 'VARCHAR(15)',
+				'array_parse': False
 			}
 		]
 	},
@@ -172,43 +206,53 @@ SCHEMA: dict = {
 		'columns': [
 			{
 				'column_name': 'id',
-				'column_type': 'SERIAL'
+				'column_type': 'SERIAL',
+				'array_parse': False
 			},
 			{
 				'column_name': 'name',
-				'column_type': 'VARCHAR(25)'
+				'column_type': 'VARCHAR(25)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'classification',
-				'column_type': 'VARCHAR(15)'
+				'column_type': 'VARCHAR(15)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'average_height',
-				'column_type': 'VARCHAR(10)'
+				'column_type': 'VARCHAR(10)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'skin_colors',
-				'column_type': 'VARCHAR(50)'
+				'column_type': 'VARCHAR(50)',
+				'array_parse': True
 			},
 			{
 				'column_name': 'hair_colors',
-				'column_type': 'VARCHAR(50)'
+				'column_type': 'VARCHAR(50)',
+				'array_parse': True
 			},
 			{
 				'column_name': 'eye_colors',
-				'column_type': 'VARCHAR(50)'
+				'column_type': 'VARCHAR(50)',
+				'array_parse': True
 			},
 			{
 				'column_name': 'average_lifespan',
-				'column_type': 'VARCHAR(12)'
+				'column_type': 'VARCHAR(12)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'homeworld',
-				'column_type': 'VARCHAR(50)'
+				'column_type': 'VARCHAR(50)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'language',
-				'column_type': 'VARCHAR(15)'
+				'column_type': 'VARCHAR(15)',
+				'array_parse': False
 			}
 		]
 	},
@@ -222,59 +266,73 @@ SCHEMA: dict = {
 		'columns': [
 			{
 				'column_name': 'id',
-				'column_type': 'SERIAL'
+				'column_type': 'SERIAL',
+				'array_parse': False
 			},
 			{
 				'column_name': 'name',
-				'column_type': 'VARCHAR(32)'
+				'column_type': 'VARCHAR(32)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'model',
-				'column_type': 'VARCHAR(50)'
+				'column_type': 'VARCHAR(50)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'manufacturer',
-				'column_type': 'VARCHAR(80)'
+				'column_type': 'VARCHAR(80)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'cost_in_credits',
-				'column_type': 'VARCHAR(15)'
+				'column_type': 'VARCHAR(15)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'length',
-				'column_type': 'VARCHAR(12)'
+				'column_type': 'VARCHAR(12)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'max_atmosphering_speed',
-				'column_type': 'VARCHAR(12)'
+				'column_type': 'VARCHAR(12)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'crew',
-				'column_type': 'VARCHAR(12)'
+				'column_type': 'VARCHAR(12)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'passengers',
-				'column_type': 'VARCHAR(12)'
+				'column_type': 'VARCHAR(12)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'cargo_capacity',
-				'column_type': 'VARCHAR(15)'
+				'column_type': 'VARCHAR(15)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'consumables',
-				'column_type': 'VARCHAR(12)'
+				'column_type': 'VARCHAR(12)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'hyperdrive_rating',
-				'column_type': 'VARCHAR(10)'
+				'column_type': 'VARCHAR(10)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'MGLT',
-				'column_type': 'VARCHAR(8)'
+				'column_type': 'VARCHAR(8)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'starship_class',
-				'column_type': 'VARCHAR(35)'
+				'column_type': 'VARCHAR(35)',
+				'array_parse': False
 			}
 		]
 	},
@@ -288,51 +346,63 @@ SCHEMA: dict = {
 		'columns': [
 			{
 				'column_name': 'id',
-				'column_type': 'SERIAL'
+				'column_type': 'SERIAL',
+				'array_parse': False
 			},
 			{
 				'column_name': 'name',
-				'column_type': 'VARCHAR(32)'
+				'column_type': 'VARCHAR(32)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'model',
-				'column_type': 'VARCHAR(50)'
+				'column_type': 'VARCHAR(50)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'manufacturer',
-				'column_type': 'VARCHAR(80)'
+				'column_type': 'VARCHAR(80)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'cost_in_credits',
-				'column_type': 'VARCHAR(15)'
+				'column_type': 'VARCHAR(15)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'length',
-				'column_type': 'VARCHAR(12)'
+				'column_type': 'VARCHAR(12)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'max_atmosphering_speed',
-				'column_type': 'VARCHAR(12)'
+				'column_type': 'VARCHAR(12)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'crew',
-				'column_type': 'VARCHAR(12)'
+				'column_type': 'VARCHAR(12)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'passengers',
-				'column_type': 'VARCHAR(12)'
+				'column_type': 'VARCHAR(12)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'cargo_capacity',
-				'column_type': 'VARCHAR(15)'
+				'column_type': 'VARCHAR(15)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'consumables',
-				'column_type': 'VARCHAR(15)'
+				'column_type': 'VARCHAR(15)',
+				'array_parse': False
 			},
 			{
 				'column_name': 'vehicle_class',
-				'column_type': 'VARCHAR(35)'
+				'column_type': 'VARCHAR(35)',
+				'array_parse': False
 			}
 		]
 	},
@@ -402,6 +472,16 @@ def read_from_file(filename: str, path: str):
 	"""
 	global DATA
 	with open(path + '/' + filename + '.json') as target_file:
+		DATA = json.load(target_file)
+
+def read_from_path(path: str):
+	""" Reads the cached data at path. 
+
+			Parameters:
+				path (str): The path to the exported file (DEFAULT: `./bin/swapi_data.json`)
+	"""
+	global DATA
+	with open(path) as target_file:
 		DATA = json.load(target_file)
 
 def build_columns(category_name) -> str:
@@ -500,6 +580,8 @@ def create_table(cursor, table_name) -> bool:
 			{comp_key}
 		);'''
 
+		# print(create_table_query)
+
 		cursor.execute(create_table_query)
 
 		return True
@@ -543,6 +625,62 @@ def populate_table(cursor, category_name) -> bool:
 
 				entry_data = entry[column_name]
 
+				if column_name == 'films':
+					arr_data: str = "{ "
+					filmCount = len(entry_data)
+					for index, film in enumerate(entry_data):
+						film_number_index: int = film.index('films/') + 6
+						film_number: int = int(film[film_number_index])
+						film_name: str = FILM_TITLES[film_number - 1]
+
+						arr_data += f'"{film_name}"'
+
+						if index + 1 < filmCount:
+							arr_data += ', '
+
+					arr_data += " }"
+					entry_data = arr_data
+
+				elif column['array_parse']:
+					# parse this field into an array
+					# , as a delimiter
+					arr_data: str = "{ "
+					
+					commaCount = entry_data.count(',')
+				
+					if commaCount > 0:
+						field: str = ''
+						left_index: int = 0
+						right_index: int = 0
+						length: int = len(entry_data)
+
+						while True:
+							end: bool = length < right_index + 1
+							if end or entry_data[right_index] == ',':
+								field = entry_data[left_index : right_index]
+								arr_data += f'"{field}"'
+								
+								if not end:
+									arr_data += ', '
+									left_index = right_index + 1
+
+									while entry_data[left_index] == ' ':
+										left_index += 1
+
+									right_index =  left_index + 1
+
+								else:
+									break
+
+							else:
+								right_index += 1
+
+					else:
+						arr_data += f'"{entry_data}"'
+
+					arr_data += " }"
+					entry_data = arr_data
+
 			# Make the columns with 'unknown's consistent
 				if FORMAT:
 					if type(entry_data).__name__ == "str":
@@ -565,6 +703,7 @@ def print_help():
 	print('\tpython ./script.py -db=some_database')
 	print('\tpython ./script.py -p=5433')
 	print('\tpython ./script.py -c=false')
+	print('\tpython ./script.py -d="./bin/custom_data.json"')
 	print('\tpython ./script.py -f')
 	print('\tpython ./script.py --cache=false')
 	print('\tpython ./script.py --force')
@@ -572,6 +711,7 @@ def print_help():
 	print('\tpython ./script.py -c=false -v -fmt=false')
 	print('\tpython ./script.py -c=false --verbose')
 	print('\tpython ./script.py --cache=false --verbose')
+	print('\tpython ./script.py --data="./bin/some_custom_data.json"')
 	print('\n')
 	print('Options:')
 	print('-db, --database\t\tName of the database to connect to (DEFAULT="bootcamp")')
@@ -580,6 +720,9 @@ def print_help():
 	print('-p, --port\t\tThe port to connect to (DEFAULT=5432)')
 	print('\t\t\t\t-p=5433')
 	print('\t\t\t\t--port=5434')
+	print('-d, --data\t\tUse a modified version of the dataset')
+	print('\t\t\t\t-d="./bin/custom_data.json"')
+	print('\t\t\t\t--data="./bin/some_custom_data.json"')
 	print('-c, --cache\t\tWhether or not to cache and use the cached results (Default=true)')
 	print('\t\t\tDisable caching and the use of any existing cache:')
 	print('\t\t\t\t-c=false')
@@ -595,9 +738,10 @@ def print_help():
 	print('-h, --help\t\tPrint usage information')
 
 async def main():
-	global VERBOSE, FORCE_CACHE_UPDATE, CACHE, FORMAT, DATABASE, PORT_ID
+	global VERBOSE, FORCE_CACHE_UPDATE, CACHE, FORMAT, DATABASE, CUSTOM_DATA, PORT_ID
 	filename: str = 'swapi_data'
 	bin_location: str = './bin'
+	custom_data_path: str = ''
 
 	# Handle args
 	if '-h' in argv or '--help' in argv:
@@ -683,6 +827,18 @@ async def main():
 				elif count > 1:	
 					print('Invalid syntax: Too many = in the flag %s', la)
 					return
+			elif la.startswith('-d=') or la.startswith('--data='):
+				count: int = la.count('=')
+
+				if count == 1:
+					index: int = la.index('=') + 1
+
+					CUSTOM_DATA = True
+					custom_data_path = la[index:]
+
+				elif count > 1:
+					print('Invalid syntax: Too many = in the flag %s', la)
+					return
 
 	if FORCE_CACHE_UPDATE and not CACHE:
 		print('Cannot force a cache update and not have caching enabled.')
@@ -693,15 +849,27 @@ async def main():
 	if VERBOSE:
 		print('Running with Options:')
 		print('\t Database:', DATABASE)
-		print('\t Database:', PORT_ID)
+		print('\t Port:', PORT_ID)
+		print('\t Custom Data:', custom_data_path if CUSTOM_DATA else CUSTOM_DATA)
 		print('\t Verbose Output:', VERBOSE)
 		print('\t Formatting:', FORMAT)
 		print('\t Cache:', CACHE)
 		print('\t Force Cache Update:', FORCE_CACHE_UPDATE)
 
+	custom_data_exists: bool = Path(custom_data_path).exists()
 	cache_exists: bool = Path(bin_location + '/' + filename + '.json').exists()
 
-	if not FORCE_CACHE_UPDATE and CACHE and cache_exists:
+	if CUSTOM_DATA:
+		if not custom_data_exists:
+			print(f'Unable to verify that "{custom_data_path}" exists!')
+			sys.exit(-1)
+
+		print('Reading from custom data..')
+
+		read_from_path(custom_data_path)
+
+		print('Reading from customer data complete..')
+	elif not FORCE_CACHE_UPDATE and CACHE and cache_exists:
 		print ('Reading from cache..')
 
 		read_from_file(filename, bin_location)
@@ -742,6 +910,9 @@ async def main():
 		print ('Constructing tables..')
 
 		for category in SCHEMA:
+			if not category in CATEGORY_NAMES:
+				continue
+
 			if VERBOSE:
 				print ('Constructing %s table..', category)
 			
@@ -751,6 +922,9 @@ async def main():
 		print ('Populating tables..')
 
 		for category in SCHEMA:
+			if not category in CATEGORY_NAMES:
+				continue
+
 			if VERBOSE:
 				print ('Populating %s table..', category)
 
