@@ -11,11 +11,11 @@ import asyncio
 from aiohttp import ClientSession
 
 # Database info
-HOSTNAME: Final[str] = 'localhost'
+HOSTNAME: str = os.environ['DB_HOST']
 DATABASE: str = 'bootcamp'
 USERNAME: str = os.environ['BOOTCAMP_USER']
 PWD: str = os.environ['BOOTCAMP_CREDS']
-PORT_ID: str = '5432'
+PORT_ID: str = os.environ['DB_PORT']
 
 # Options
 FORMAT: bool = True
@@ -752,6 +752,15 @@ def print_help():
 	print('-db, --database\t\tName of the database to connect to (DEFAULT="bootcamp")')
 	print('\t\t\t\t-db=some_db')
 	print('\t\t\t\t-database=some_other_db')
+	print('-h, --host\t\tThe host to connect to (DEFAULT=localhost)')
+	print('\t\t\t\t-h="localhost"')
+	print('\t\t\t\t--host="localhost"')
+	print('-u, --user\t\tThe postgres user(DEFAULT=BOOTCAMP_USER[Environment Variable]')
+	print('\t\t\t\t-u=some-user')
+	print('\t\t\t\t--user=other-user')
+	print('-pw, --password\t\tThe password to the postgres user(DEFAULT=BOOTCAMP_CREDS[Environment Variable]')
+	print('\t\t\t\t-pw="$0m3P@$$w0rd"')
+	print('\t\t\t\t--password="$0m3P@$$w0rd"')
 	print('-p, --port\t\tThe port to connect to (DEFAULT=5432)')
 	print('\t\t\t\t-p=5433')
 	print('\t\t\t\t--port=5434')
@@ -773,7 +782,7 @@ def print_help():
 	print('-h, --help\t\tPrint usage information')
 
 async def main():
-	global VERBOSE, FORCE_CACHE_UPDATE, CACHE, FORMAT, DATABASE, CUSTOM_DATA, PORT_ID
+	global VERBOSE, FORCE_CACHE_UPDATE, CACHE, FORMAT, DATABASE, CUSTOM_DATA, PORT_ID, HOSTNAME, PWD, USERNAME
 	filename: str = 'swapi_data'
 	bin_location: str = './bin'
 	custom_data_path: str = ''
@@ -858,6 +867,42 @@ async def main():
 					value: str = la[index:]
 
 					PORT_ID = value
+				
+				elif count > 1:	
+					print('Invalid syntax: Too many = in the flag %s', la)
+					return
+			elif arg.startswith('-h=') or arg.startswith('--host='):
+				count: int = arg.count('=')
+
+				if count == 1:
+					index: int = la.index('=') + 1
+					value: str = la[index:]
+
+					HOSTNAME = value
+				
+				elif count > 1:	
+					print('Invalid syntax: Too many = in the flag %s', la)
+					return
+			elif arg.startswith('-u=') or arg.startswith('--user='):
+				count: int = arg.count('=')
+
+				if count == 1:
+					index: int = la.index('=') + 1
+					value: str = la[index:]
+
+					USERNAME = value
+				
+				elif count > 1:	
+					print('Invalid syntax: Too many = in the flag %s', la)
+					return
+			elif arg.startswith('-pw=') or arg.startswith('--password='):
+				count: int = arg.count('=')
+
+				if count == 1:
+					index: int = la.index('=') + 1
+					value: str = la[index:]
+
+					PWD = value
 				
 				elif count > 1:	
 					print('Invalid syntax: Too many = in the flag %s', la)
