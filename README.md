@@ -19,12 +19,26 @@ A utility script to import data from Star Wars API to a local postgreSQL databas
 - `DATABASE`: Set the name of the database via the `-db` or `--database` flags
 - `PORT_ID`: Set the port to connect to via the `-p` or `--port` flags
 - `USERNAME`: An environment variable of the username you use for postgreSQL (DEFAULT: `BOOTCAMP_USER`)
+	- To use a different username, use the user flag (`-u, --user`)
 - `PWD`: An environment variable of the password you use for postgreSQL (DEFAULT: `BOOTCAMP_CREDS`)
+	- To use a different password, use the pw flag (`-pw, --password`)
+- `HOST`: Set the host to connect to via the `-h` or `--host` flags
+
+
 
 __Options__: 
 - `-db, --database`: Name of the database to connect to
 	- DEFAULT: `bootcamp`
 	- To change: `-db=some_db` or `--database=some_other_db`
+- `-h, --host`: The host to connect to 
+	- DEFAULT: `localhost`
+	- To change: `-h="localhost"` or `--host="localhost"`
+- `-u, --user`: The postgres user
+	- DEFAULT: `BOOTCAMP_USER(Environment Variable)`
+	- To change: `-u="some-user"` or `--user="other-user"`
+- `-pw, --password`: The password to the postgres user
+	- DEFAULT: `BOOTCAMP_CREDS(Environment Variable)`
+	- To change: `-pw="$0m3P@$$w0rd"` or `--password="$0m3P@$$w0rd"`
 - `-p, --port`: The port to connect to
 	- DEFAULT: `5432`
 	- To change: `-p=5433` or `--port=5433`
