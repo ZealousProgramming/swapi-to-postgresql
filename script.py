@@ -723,6 +723,7 @@ def populate_table(cursor, category_name) -> bool:
 
 				data += (entry_data,)
 
+			# print(insert_row_query % (data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9]))
 			cursor.execute(insert_row_query, data)
 		return True
 
@@ -899,13 +900,13 @@ async def main():
 				count: int = arg.count('=')
 
 				if count == 1:
-					index: int = la.index('=') + 1
-					value: str = la[index:]
+					index: int = arg.index('=') + 1
+					value: str = arg[index:]
 
 					PWD = value
 				
 				elif count > 1:	
-					print('Invalid syntax: Too many = in the flag %s', la)
+					print('Invalid syntax: Too many = in the flag %s', arg)
 					return
 			elif la.startswith('-d=') or la.startswith('--data='):
 				count: int = la.count('=')
@@ -929,7 +930,10 @@ async def main():
 	if VERBOSE:
 		print('Running with Options:')
 		print('\t Database:', DATABASE)
+		print('\t HOST:', HOSTNAME)
 		print('\t Port:', PORT_ID)
+		print('\t USER:', USERNAME)
+		# print('\t PW:', PWD)
 		print('\t Custom Data:', custom_data_path if CUSTOM_DATA else CUSTOM_DATA)
 		print('\t Verbose Output:', VERBOSE)
 		print('\t Formatting:', FORMAT)
