@@ -11,11 +11,33 @@ import asyncio
 from aiohttp import ClientSession
 
 # Database info
-HOSTNAME: str = os.environ['DB_HOST']
+HOSTNAME: str = ''
 DATABASE: str = 'bootcamp'
-USERNAME: str = os.environ['BOOTCAMP_USER']
-PWD: str = os.environ['BOOTCAMP_CREDS']
-PORT_ID: str = os.environ['DB_PORT']
+USERNAME: str = ''
+PWD: str = ''
+PORT_ID: str = ''
+
+try:
+	HOSTNAME = os.environ['DB_HOST']
+except KeyError:
+	HOSTNAME = 'localhost'
+
+try:
+	USERNAME = os.environ['BOOTCAMP_USER']
+except KeyError:
+	USERNAME = 'postgres'
+
+try:
+	PWD = os.environ['BOOTCAMP_CREDS']
+except KeyError:
+	PWD = 'NoPasswordFound'
+
+try:
+	PORT_ID = os.environ['DB_PORT']
+except KeyError:
+	PORT_ID = '5432'
+
+
 
 # Options
 FORMAT: bool = True
@@ -933,7 +955,7 @@ async def main():
 		print('\t HOST:', HOSTNAME)
 		print('\t Port:', PORT_ID)
 		print('\t USER:', USERNAME)
-		# print('\t PW:', PWD)
+		print('\t PW:', PWD)
 		print('\t Custom Data:', custom_data_path if CUSTOM_DATA else CUSTOM_DATA)
 		print('\t Verbose Output:', VERBOSE)
 		print('\t Formatting:', FORMAT)
